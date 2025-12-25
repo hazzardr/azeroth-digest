@@ -1,5 +1,5 @@
-PROJECT_NAME := "go-start"
-EXEC_NAME := gostart
+PROJECT_NAME := "azeroth-digest"
+EXEC_NAME := azeroth-digest
 SSH_USER := ansible
 DEPLOY_TARGET_IP := 100.100.77.57
 
