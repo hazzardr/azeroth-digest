@@ -1,7 +1,11 @@
+include .env
+export
+
 PROJECT_NAME := "azeroth-digest"
 EXEC_NAME := azeroth-digest
 SSH_USER := ansible
 DEPLOY_TARGET_IP := 100.100.77.57
+DB_URL := duckdb:data/azdg.duckdb
 
 .PHONY: help ## print this
 help:
@@ -20,34 +24,7 @@ init:
 
 .PHONY: run ## Run the project
 run:
-	go run .
-
-.PHONY: doctor ## checks if local environment is ready for development
-doctor:
-	@echo "Checking local environment..."
-	@if ! command -v go &> /dev/null; then \
-		echo "`go` is not installed. Please install it first."; \
-		exit 1; \
-	fi
-	@if [[ ! ":$$PATH:" == *":$$HOME/go/bin:"* ]]; then \
-		echo "GOPATH/bin is not in PATH. Please add it to your PATH variable."; \
-		exit 1; \
-	fi
-	@if ! command -v cobra-cli &> /dev/null; then \
-		echo "Cobra-cli is not installed. Please run 'make deps'."; \
-		exit 1; \
-	fi
-	@if ! command -v sqlc &> /dev/null; then \
-		echo "`sqlc` is not installed. Please run 'make deps'."; \
-		exit 1; \
-	fi
-
-	@if ! command -v docker &> /dev/null; then \
-		echo "`docker` is not installed. Please install it first."; \
-		exit 1; \
-	fi
-	@echo "Local environment OK"
-
+	@go run . bot serve --token=$$AZDG_DISC_TOKEN
 
 .PHONY: deps ## install dependencies used for development
 deps:
@@ -57,13 +34,8 @@ deps:
 clean:
 	rm -rf generated
 
-.PHONY: generate ## generate database code
-generate:
-	sqlc generate -f sqlc.yaml
-
 .PHONY: build ## builds the project
 build:
-	$(MAKE) generate
 	go build -ldflags='-s' -o=./bin/${PROJECT_NAME} .
 	GOOS=linux GOARCH=amd64 go build -ldflags='-s' -o=./bin/linux_amd64/${PROJECT_NAME} .
 
@@ -79,6 +51,14 @@ test:
 fmt:
 	go fmt ./...
 
+
+.PHONY: db/migration/status ## get the status of the db migrations
+db/migration/status:
+	goose duckdb $(DB_URL) -dir migrations status
+
+.PHONY: db/migrate ## run database migrations
+db/migrate:
+	goose duckdb $(DB_URL) -dir migrations up
 
 .PHONY: production/connect ## connects to production deployment server
 production/connect:

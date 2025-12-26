@@ -1,14 +1,28 @@
 name: CI
 
-#on:
-#  push:
-#    branches:
-#      - main
-#  pull_request:
-#    types:
-#      - opened
-#      - synchronize
-#      - reopened
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.go'
+      - 'go.mod'
+      - 'go.sum'
+      - '.golangci.yml'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - '**/*.go'
+      - 'go.mod'
+      - 'go.sum'
+      - '.golangci.yml'
+      - '.github/workflows/ci.yml'
 
 permissions:
   contents: read
