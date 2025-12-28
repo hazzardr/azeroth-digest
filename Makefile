@@ -1,7 +1,7 @@
 include .env
 export
 
-PROJECT_NAME := "azeroth-digest"
+PROJECT_NAME := azeroth-digest
 EXEC_NAME := azeroth-digest
 SSH_USER := ansible
 DEPLOY_TARGET_IP := 100.100.77.57
@@ -25,6 +25,10 @@ init:
 .PHONY: run ## Run the project
 run:
 	@go run . bot serve --token=$$AZDG_DISC_TOKEN
+
+.PHONY: sync ## Sync discord commands with gateway
+sync:
+	@go run . bot sync --token=$$AZDG_DISC_TOKEN
 
 .PHONY: deps ## install dependencies used for development
 deps:

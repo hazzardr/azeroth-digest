@@ -8,6 +8,15 @@ import (
 	"github.com/disgoorg/disgo/handler"
 )
 
+var pingCommand = SlashCommand{
+	Metadata: discord.SlashCommandCreate{
+		Name:        "ping",
+		Description: "Pings the bot server",
+	},
+	Path:       "/ping",
+	HandleFunc: HandlePing,
+}
+
 func HandlePing(_ discord.SlashCommandInteractionData, e *handler.CommandEvent) error {
 	var gatewayPing string
 	if e.Client().HasGateway() {
