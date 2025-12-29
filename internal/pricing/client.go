@@ -3,12 +3,10 @@ package pricing
 import (
 	"bytes"
 	"context"
-	"encoding/json/jsontext"
 	"encoding/json/v2"
 	"errors"
 	"net/http"
 	"net/url"
-	"strings"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -79,9 +77,18 @@ func (ts TSMTokenSource) Token() (*oauth2.Token, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err = client.Post(
+	resp, err := client.Post(
 		ts.tokenURL.String(),
 		"application/json",
 		bytes.NewBuffer(body),
 	)
+	if err != nil {
+		return nil, errors.Join(errors.New("failed to retrieve access token"), err)
+	}
+	var otoken oauth2.Token
+	err = json.UnmarshalRead(resp.Body, &otoken)
+	if err != nil {
+		return nil, errors.Join(errors.New("failed to parse access token"), err)
+	}
+	return &otoken, nil
 }
