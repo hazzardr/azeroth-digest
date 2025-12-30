@@ -1,5 +1,13 @@
 package cli
 
+import (
+	"fmt"
+	"log/slog"
+	"time"
+
+	"github.com/hazzardr/azeroth-digest/internal/pricing"
+)
+
 type PricingCommand struct {
 	Scrape ScrapeCommand `cmd:"" help:"Scrape pricing data from TSM API."`
 }
@@ -13,6 +21,18 @@ type ScrapeCommand struct {
 }
 
 func (s *ScrapeCommand) Run() error {
-
+	client, err := pricing.NewClient(s.Token, s.URL)
+	if err != nil {
+		return fmt.Errorf("could not initialize client: %w", err)
+	}
+	fp, err := client.WriteAHPricesToFile(s.AH)
+	if err != nil {
+		return fmt.Errorf("could not scrape pricing data: %w", err)
+	}
+	slog.Info(
+		"retrieved pricing data successfully",
+		slog.String("filePath", fp),
+		slog.Time("timeStamp", time.Now()),
+	)
 	return nil
 }

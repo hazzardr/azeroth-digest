@@ -30,6 +30,10 @@ run:
 sync:
 	@go run . bot sync --token=$$AZDG_DISC_TOKEN
 
+.PHONY: scrape ## Scrape pricing data from TSM API
+scrape:
+	@go run . pricing scrape --token=$$AZDG_TSM_TOKEN
+
 .PHONY: deps ## install dependencies used for development
 deps:
 	@go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest

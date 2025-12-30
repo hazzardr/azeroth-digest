@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"errors"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -26,11 +26,11 @@ type SyncCommand struct {
 func (s *ServeCommand) Run() error {
 	b, err := discord.NewBot(s.Token)
 	if err != nil {
-		return errors.Join(errors.New("failed to create discord bot"), err)
+		return fmt.Errorf("failed to create discord bot: %w", err)
 	}
 	err = b.Start()
 	if err != nil {
-		return errors.Join(errors.New("failed to start the discord bot"), err)
+		return fmt.Errorf("failed to start the discord bot: %w", err)
 	}
 	slog.Info("discord connection successful")
 
@@ -43,11 +43,11 @@ func (s *ServeCommand) Run() error {
 func (s *SyncCommand) Run() error {
 	b, err := discord.NewBot(s.Token)
 	if err != nil {
-		return errors.Join(errors.New("failed to create discord bot"), err)
+		return fmt.Errorf("failed to create discord bot: %w", err)
 	}
 	err = b.SyncCommands()
 	if err != nil {
-		return errors.Join(errors.New("failed to sync commands"), err)
+		return fmt.Errorf("failed to sync commands: %w", err)
 	}
 	slog.Info("discord command sync successful")
 	return nil
