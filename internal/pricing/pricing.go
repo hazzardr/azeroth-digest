@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
+	"time"
 )
 
 type Price struct {
@@ -42,8 +44,13 @@ func (c *Client) WriteAHPricesToFile(id int) (string, error) {
 			return "", errors.Join(msg, errors.New(string(body)))
 		}
 	}
-	//TODO: Better file handling
-	filePath := "./data/pricing/test.json"
+
+	ts := time.Now().Format("2006/01/02/15:04")
+	filePath := fmt.Sprintf("./data/pricing/%s.json", ts)
+	err = os.MkdirAll(filepath.Dir(filePath), 0777)
+	if err != nil {
+		return "", fmt.Errorf("failed to create file: %w", err)
+	}
 	f, err := os.Create(filePath)
 	if err != nil {
 		return "", fmt.Errorf("failed to create file: %w", err)
