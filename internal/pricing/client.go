@@ -62,10 +62,13 @@ func (ts TSMTokenSource) Token() (*oauth2.Token, error) {
 		return nil, fmt.Errorf("failed to retrieve access token: %w", err)
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode <= 200 && resp.StatusCode >= 300 {
 		msg := fmt.Errorf("error retrieving TSM OAuth token: %s", resp.Status)
 		if resp.Body != nil {
-			body, _ := io.ReadAll(resp.Body)
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
+				msg = fmt.Errorf("error reading response body: %w", err)
+			}
 			return nil, errors.Join(msg, errors.New(string(body)))
 		}
 	}
