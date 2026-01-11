@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/hazzardr/azeroth-digest/compare/v1.0.0...v1.0.1) (2026-01-11)
+
+
+### Bug Fixes
+
+* fix goreleaser workflow ([91c8430](https://github.com/hazzardr/azeroth-digest/commit/91c84305a456d843e9e0bb07f17e52361e8767a7))
+
 ## 1.0.0 (2025-12-31)
 
 
